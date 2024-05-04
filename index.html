@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Baseball Crowd Noise with Tone.js</title>
+    <title>crowdnoise</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.41/Tone.js"></script>
 </head>
 <body>
+    <p style="width: 600px">This webpage plays pink noise to display the status of a baseball game. Press one of the buttons to "tune in" to the game.
+        Roughly speaking, the noise's volume indicates the excitement level of the game (expected entropy loss until the half-inning ends, technically)
+        and the pitch indicates whether your team is winning (higher pitch, closer to an "ahh") or losing (lower pitch, closer to an "ooh").
+        Reload the page to tune into another game.</p>
     <p id="display">
     </p>
     <div id="buttons"></div>

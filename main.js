@@ -113,11 +113,14 @@ function updateVolume(oldIndex, newIndex) {
 
 // general setup
 
+const buttonsDiv = document.getElementById("buttons");
+
 function selectGame(gamePkArg, favHomeArg) {
     gamePk = gamePkArg;
     favHome = favHomeArg;
 
     pinkNoise.start();
+    buttonsDiv.style.display = "none";
 
     refreshEverything();
     const gameUpdateInterval = setInterval(refreshEverything, 15 * 1000);
@@ -129,7 +132,6 @@ request.open("GET", "https://statsapi.mlb.com/api/v1/schedule?sportId=1", false)
 request.send(null);
 const games = JSON.parse(request.responseText).dates[0].games;
 
-const buttonsDiv = document.getElementById("buttons")
 games.forEach(game => {
     if (game.status.abstractGameState == "Live") {
         const awayButton = document.createElement("button");
