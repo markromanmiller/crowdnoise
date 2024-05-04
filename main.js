@@ -18,19 +18,21 @@ function getExcitementIndex() {
     t = t * 18 + halfInning + (outs >= 3);
     t = t * 3 + (outs % 3);
     t = t * 8 + 4 * base1 + 2 * base2 + base3;
-    console.log(t);
     return excitement_indexes[t];
 }
 
-function getHomeWinProbability() {
+function getWinProbability() {
     const request = new XMLHttpRequest();
     request.open("GET", "https://statsapi.mlb.com/api/v1/game/" + gamePk + "/contextMetrics", false);
     request.send(null);
-    winProbability = JSON.parse(request.responseText).homeWinProbability;
+    if (favHome) {
+        winProbability = JSON.parse(request.responseText).homeWinProbability;
+    } else {
+        winProbability = JSON.parse(request.responseText).awayWinProbability;
+    }
 }
 
 function refreshDisplay() {
-    console.log(document.getElementById("display").innerHTML);
     document.getElementById("display").innerHTML =
         "homeScore" + homeScore + "  " +
         "awayScore" + awayScore + "  " +
@@ -46,7 +48,7 @@ function refreshDisplay() {
 function refreshStatusData() {
     // get linescore data.
     const request = new XMLHttpRequest();
-    request.open("GET", "https://statsapi.mlb.com/api/v1.1/game/747208/feed/live", false);
+    request.open("GET", "https://statsapi.mlb.com/api/v1.1/game/" + gamePk + "/feed/live", false);
     request.send(null);
     const linescore = JSON.parse(request.responseText).liveData.linescore;
 
@@ -64,7 +66,7 @@ function refreshStatusData() {
 
 function refreshEverything() {
     // get and show all the new data
-    getHomeWinProbability();
+    getWinProbability();
     refreshStatusData();
     refreshDisplay();
 
@@ -84,6 +86,14 @@ function getRandomFrequency() {
     return 250 + winProbability * 4 + Math.random() * 100; // Random frequency between 400 and 450
 }
 
+function updateFilterFrequency() {
+    const newFrequency = getRandomFrequency(); // Get a new random frequency
+    const currentTime = Tone.now(); // Current time in Tone.js
+    const rampTime = 2; // Time to ramp to the new frequency (3 seconds)
+
+    // Smoothly transition to the new frequency
+    bandpassFilter.frequency.linearRampToValueAtTime(newFrequency, currentTime + rampTime);
+}
 
 // Create a noise source
 const pinkNoise = new Tone.Noise("pink");
@@ -101,22 +111,39 @@ function updateVolume(oldIndex, newIndex) {
     pinkNoiseVolume.volume.linearRampToValueAtTime(-15 + 1.5 * newIndex, currentTime + 10);
 }
 
-// Functions to start and stop the sound
-function startSound() {
-    pinkNoise.start();
-    pinkNoise.mute = false; // Unmute the white noise
-}
-function stopSound() {
-    pinkNoise.mute = true; // Mute the white noise
-}
-document.getElementById("startSound").addEventListener("click", startSound);
-document.getElementById("stopSound").addEventListener("click", stopSound);
-
-
 // general setup
 
-gamePk = 747208;
+function selectGame(gamePkArg, favHomeArg) {
+    gamePk = gamePkArg;
+    favHome = favHomeArg;
 
-refreshEverything();
-const gameUpdateInterval = setInterval(refreshEverything, 15 * 1000);
+    pinkNoise.start();
 
+    refreshEverything();
+    const gameUpdateInterval = setInterval(refreshEverything, 15 * 1000);
+    const updateFrequencyInterval = setInterval(updateFilterFrequency, 2 * 1000);
+}
+
+const request = new XMLHttpRequest();
+request.open("GET", "https://statsapi.mlb.com/api/v1/schedule?sportId=1", false);
+request.send(null);
+const games = JSON.parse(request.responseText).dates[0].games;
+
+const buttonsDiv = document.getElementById("buttons")
+games.forEach(game => {
+    if (game.status.abstractGameState == "Live") {
+        const awayButton = document.createElement("button");
+        awayButton.textContent = game.teams.away.team.name;
+        awayButton.onclick = function() {selectGame(game.gamePk, 0)};
+
+        const homeButton = document.createElement("button");
+        homeButton.textContent = game.teams.home.team.name;
+        homeButton.onclick = function() {selectGame(game.gamePk, 1)};
+
+        const buttonPar = document.createElement("p");
+        buttonPar.appendChild(awayButton);
+        buttonPar.append(" at ");
+        buttonPar.appendChild(homeButton);
+        buttonsDiv.appendChild(buttonPar);
+    }
+});
