@@ -88,17 +88,14 @@ function refreshStatusData() {
 
 function refreshEverything() {
     // get and show all the new data
+    const oldWinProb = winProbability;
     refreshStatusData();
     getWinProbability();
     getWinProbability2();
     refreshDisplay();
 
     // check whether to update the excitement level
-    newExcitementIndex = getExcitement()
-    if (excitementIndex != newExcitementIndex) {
-        updateVolume(excitementIndex, getExcitement());
-        excitementIndex = newExcitementIndex;
-    }
+    updateVolume(oldWinProb);
 }
 
 // https://statsapi.mlb.com/api/v1/schedule?sportId=1
@@ -123,14 +120,22 @@ const pinkNoiseVolume = new Tone.Volume(-10);
 const bandpassFilter = new Tone.Filter(425, "bandpass");
 pinkNoise.chain(pinkNoiseVolume, bandpassFilter, Tone.Destination);
 
-function updateVolume(oldIndex, newIndex) {
+function updateVolume(oldWinProb) {
     const currentTime = Tone.now();
-    if (oldIndex > newIndex) {
-        pinkNoiseVolume.volume.linearRampToValueAtTime(-20, currentTime + 2);
-    } else if (oldIndex < newIndex) {
-        pinkNoiseVolume.volume.linearRampToValueAtTime(0, currentTime + 2);
+    const deltaWinProb = winProbability - oldWinProb;
+
+    var timeExtension = 0;
+    const baselineVolume = -20 + 1.5 * excitementIndex;
+    if (deltaWinProb < 0) {
+        pinkNoiseVolume.volume.linearRampToValueAtTime(baselineVolume + deltaWinProb, currentTime + 3);
+    } else if (deltaWinProb < 10) {
+        pinkNoiseVolume.volume.linearRampToValueAtTime(baselineVolume + deltaWinProb, currentTime + 3);
+    } else { //# above 10
+        timeExtension = deltaWinProb - 10;
+        pinkNoiseVolume.volume.linearRampToValueAtTime(baselineVolume + 10, currentTime + 3);
+        pinkNoiseVolume.volume.linearRampToValueAtTime(baselineVolume + 10, currentTime + timeExtension + 3);
     }
-    pinkNoiseVolume.volume.linearRampToValueAtTime(-15 + 1.5 * newIndex, currentTime + 10);
+    pinkNoiseVolume.volume.linearRampToValueAtTime(baselineVolume, currentTime + timeExtension + 15);
 }
 
 // general setup
