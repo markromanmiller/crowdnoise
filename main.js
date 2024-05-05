@@ -21,13 +21,25 @@ function getStatusIndex() {
     return t * 8 + 4 * base1 + 2 * base2 + base3;
 }
 
-function getExcitementIndex() {
+function getExcitement() {
+    if (Math.abs(homeScore - awayScore) > 10) {
+        return 1;
+    }
     return excitement_indexes[getStatusIndex()];
 }
 
 function getWinProbability() {
-    console.log(getStatusIndex());
-    winProbability = winprob_vector[getStatusIndex()];
+    if (Math.abs(homeScore - awayScore) > 10) {
+        if ((homeScore > awayScore) == favHome) {
+            winProbability = 99.9;
+        } else {
+            winProbability = 0.1;
+        }
+    } else if (favHome) {
+        winProbability = winprob_vector[getStatusIndex()] * 100;
+    } else {
+        winProbability = (1 - winprob_vector[getStatusIndex()]) * 100;
+    }
 }
 
 function getWinProbability2() {
@@ -52,7 +64,7 @@ function refreshDisplay() {
         "base3 " + base3 + "  " +
         "winProb " + winProbability + "  " +
         "winProb2 " + winProbability2 + "  " +
-        "excitement " + getExcitementIndex();
+        "excitement " + getExcitement();
 }
 
 function refreshStatusData() {
@@ -81,11 +93,10 @@ function refreshEverything() {
     getWinProbability2();
     refreshDisplay();
 
-
     // check whether to update the excitement level
-    newExcitementIndex = getExcitementIndex()
+    newExcitementIndex = getExcitement()
     if (excitementIndex != newExcitementIndex) {
-        updateVolume(excitementIndex, getExcitementIndex());
+        updateVolume(excitementIndex, getExcitement());
         excitementIndex = newExcitementIndex;
     }
 }
