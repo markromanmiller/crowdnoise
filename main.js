@@ -4,6 +4,7 @@ var favHome;
 
 // Game Status
 var winProbability = 50;
+var winProbability2 = 50;
 var homeScore = 0;
 var awayScore = 0;
 var halfInning = 0;
@@ -13,36 +14,45 @@ var base2 = 0;
 var base3 = 0;
 var excitementIndex = 1;
 
-function getExcitementIndex() {
+function getStatusIndex() {
     var t = (homeScore - awayScore) + 10;
     t = t * 18 + halfInning + (outs >= 3);
     t = t * 3 + (outs % 3);
-    t = t * 8 + 4 * base1 + 2 * base2 + base3;
-    return excitement_indexes[t];
+    return t * 8 + 4 * base1 + 2 * base2 + base3;
+}
+
+function getExcitementIndex() {
+    return excitement_indexes[getStatusIndex()];
 }
 
 function getWinProbability() {
+    console.log(getStatusIndex());
+    winProbability = winprob_vector[getStatusIndex()];
+}
+
+function getWinProbability2() {
     const request = new XMLHttpRequest();
     request.open("GET", "https://statsapi.mlb.com/api/v1/game/" + gamePk + "/contextMetrics", false);
     request.send(null);
     if (favHome) {
-        winProbability = JSON.parse(request.responseText).homeWinProbability;
+        winProbability2 = JSON.parse(request.responseText).homeWinProbability;
     } else {
-        winProbability = JSON.parse(request.responseText).awayWinProbability;
+        winProbability2 = JSON.parse(request.responseText).awayWinProbability;
     }
 }
 
 function refreshDisplay() {
     document.getElementById("display").innerHTML =
-        "homeScore" + homeScore + "  " +
-        "awayScore" + awayScore + "  " +
-        "inning" + (halfInning % 2 ? "bot" : "top") + (Math.floor(halfInning / 2) + 1) + "  " +
-        "outs" + outs + "  " +
-        "base1" + base1 + "  " +
-        "base2" + base2 + "  " +
-        "base3" + base3 + "  " +
-        "winProb" + winProbability + "  " +
-        "excitement" + getExcitementIndex();
+        "homeScore " + homeScore + "  " +
+        "awayScore " + awayScore + "  " +
+        "inning " + (halfInning % 2 ? "bot " : "top ") + (Math.floor(halfInning / 2) + 1) + "  " +
+        "outs "  + outs + "  " +
+        "base1 " + base1 + "  " +
+        "base2 " + base2 + "  " +
+        "base3 " + base3 + "  " +
+        "winProb " + winProbability + "  " +
+        "winProb2 " + winProbability2 + "  " +
+        "excitement " + getExcitementIndex();
 }
 
 function refreshStatusData() {
@@ -66,9 +76,11 @@ function refreshStatusData() {
 
 function refreshEverything() {
     // get and show all the new data
-    getWinProbability();
     refreshStatusData();
+    getWinProbability();
+    getWinProbability2();
     refreshDisplay();
+
 
     // check whether to update the excitement level
     newExcitementIndex = getExcitementIndex()
@@ -87,11 +99,10 @@ function getRandomFrequency() {
 }
 
 function updateFilterFrequency() {
-    const newFrequency = getRandomFrequency(); // Get a new random frequency
-    const currentTime = Tone.now(); // Current time in Tone.js
-    const rampTime = 2; // Time to ramp to the new frequency (3 seconds)
+    const newFrequency = getRandomFrequency();
+    const currentTime = Tone.now();
+    const rampTime = 2;
 
-    // Smoothly transition to the new frequency
     bandpassFilter.frequency.linearRampToValueAtTime(newFrequency, currentTime + rampTime);
 }
 
