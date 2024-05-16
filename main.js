@@ -21,11 +21,11 @@ function getStatusIndex() {
     return t * 8 + 4 * base1 + 2 * base2 + base3;
 }
 
-function getExcitement() {
+function getExcitementIndex() {
     if (Math.abs(homeScore - awayScore) > 10) {
         return 1;
     }
-    return excitement_indexes[getStatusIndex()];
+    excitementIndex = excitement_indexes[getStatusIndex()];
 }
 
 function getWinProbability() {
@@ -53,7 +53,82 @@ function getWinProbability2() {
     }
 }
 
+
+function boolFill(id, fill) {
+    document.getElementById(id).className.baseVal = fill ? "filled" : "";
+}
+
+function boolActive(id, active) {
+    document.getElementById(id).style.display = active ? "block" : "none";
+}
+
 function refreshDisplay() {
+
+    // scores
+    document.getElementById("homescore").innerHTML = homeScore;
+    document.getElementById("awayscore").innerHTML = awayScore;
+
+    // winprob:
+    const winprobMeter = document.getElementById("winprob-meter");
+    const background = document.getElementById("winprob-back");
+    const fullHeight = background.height.baseVal.value;
+    const realHight = winprobMeter.height.baseVal.value = winProbability / 100 * fullHeight;
+    if (favHome) {
+        winprobMeter.y.baseVal.value = background.y.baseVal.value + (1 - winProbability / 100) * fullHeight;
+    } else {
+        winprobMeter.y.baseVal.value = background.y.baseVal.value;
+    }
+
+    const inning = (Math.floor(halfInning / 2) + 1);
+
+    // innings, half innings
+    if (halfInning % 2 == 0) {
+        // top half:
+        boolActive("minifield-awaybatting", true);
+        boolActive("minifield-homebatting", false);
+        boolActive("top-inning-obj", true);
+        boolActive("bottom-inning-obj", false);
+        document.getElementById("top-inning-text").innerHTML = "TOP " + inning;
+
+        // boolFill
+        boolFill("out1-away", outs >= 1);
+        boolFill("out2-away", outs >= 2);
+        boolFill("out3-away", outs >= 3);
+        // bases
+        boolFill("base1-away", base1);
+        boolFill("base2-away", base2);
+        boolFill("base3-away", base3);
+        // outs
+    } else {
+        boolActive("minifield-homebatting", true);
+        boolActive("minifield-awaybatting", false);
+        boolActive("top-inning-obj", false);
+        boolActive("bottom-inning-obj", true);
+        document.getElementById("bottom-inning-text").innerHTML = "BOT " + inning;
+        // bottom half
+        // outs
+        // boolFill
+        boolFill("out1-home", outs >= 1);
+        boolFill("out2-home", outs >= 2);
+        boolFill("out3-home", outs >= 3);
+        // bases
+        boolFill("base1-home", base1);
+        boolFill("base2-home", base2);
+        boolFill("base3-home", base3);
+    }
+    // set up winprob (darker is better)
+    for (var i = 1; i <= 10; i++) {
+	console.log(excitementIndex);
+        boolFill("excitement-" + i, excitementIndex >= i);
+        console.log("excitement-" + i);
+	console.log(excitementIndex >= i);
+    }
+
+    // excitement
+
+}
+
+function refreshDisplay2() {
     document.getElementById("display").innerHTML =
         "homeScore " + homeScore + "  " +
         "awayScore " + awayScore + "  " +
@@ -64,7 +139,7 @@ function refreshDisplay() {
         "base3 " + base3 + "  " +
         "winProb " + winProbability + "  " +
         "winProb2 " + winProbability2 + "  " +
-        "excitement " + getExcitement();
+        "excitement " + excitementIndex;
 }
 
 function refreshStatusData() {
@@ -92,6 +167,7 @@ function refreshEverything() {
     refreshStatusData();
     getWinProbability();
     getWinProbability2();
+    getExcitementIndex();
     refreshDisplay();
 
     // check whether to update the excitement level
@@ -141,6 +217,7 @@ function updateVolume(oldWinProb) {
 // general setup
 
 const buttonsDiv = document.getElementById("buttons");
+const ahTeamsMap = new Map();
 
 function selectGame(gamePkArg, favHomeArg) {
     gamePk = gamePkArg;
@@ -148,6 +225,8 @@ function selectGame(gamePkArg, favHomeArg) {
 
     pinkNoise.start();
     buttonsDiv.style.display = "none";
+    document.getElementById("away-logo").href.baseVal = "https://midfield.mlbstatic.com/v1/team/" + ahTeamsMap[gamePkArg][0] + "/spots/256";
+    document.getElementById("home-logo").href.baseVal = "https://midfield.mlbstatic.com/v1/team/" + ahTeamsMap[gamePkArg][1] + "/spots/256";
 
     refreshEverything();
     const gameUpdateInterval = setInterval(refreshEverything, 15 * 1000);
@@ -169,6 +248,8 @@ games.forEach(game => {
         homeButton.textContent = game.teams.home.team.name;
         homeButton.onclick = function() {selectGame(game.gamePk, 1)};
 
+        ahTeamsMap[game.gamePk] = [game.teams.away.team.id, game.teams.home.team.id];
+
         const buttonPar = document.createElement("p");
         buttonPar.appendChild(awayButton);
         buttonPar.append(" at ");
@@ -176,3 +257,5 @@ games.forEach(game => {
         buttonsDiv.appendChild(buttonPar);
     }
 });
+
+console.log(ahTeamsMap);

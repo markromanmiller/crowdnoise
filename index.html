@@ -4,15 +4,317 @@
     <meta charset="UTF-8">
     <title>crowdnoise</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.41/Tone.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <p style="width: 600px">This webpage plays pink noise to display the status of a baseball game. Press one of the buttons to "tune in" to the game.
         Roughly speaking, the noise's volume indicates the excitement level of the game (expected entropy loss until the half-inning ends, technically)
         and the pitch indicates whether your team is winning (higher pitch, closer to an "ahh") or losing (lower pitch, closer to an "ooh").
         Reload the page to tune into another game.</p>
-    <p id="display">
-    </p>
+    <p id="display"></p>
     <div id="buttons"></div>
+    <!--img alt="Cubs logo" src="https://www.mlbstatic.com/team-logos/team-cap-on-light/112.svg"-->
+    <svg
+   width="3.5in"
+   height="2in"
+   viewBox="0 0 88.9 50.8"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="template4.svg"
+   inkscape:version="1.3.1 (9b9bdc1480, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <rect
+       x="221.80022"
+       y="42.54882"
+       width="66.016934"
+       height="25.761481"
+       id="rect9" />
+    <rect
+       x="120.0273"
+       y="21.318846"
+       width="102.81796"
+       height="95.365092"
+       id="rect4" />
+    <rect
+       x="133.53166"
+       y="23.093499"
+       width="71.552748"
+       height="68.948168"
+       id="rect3" />
+    <rect
+       x="219.0722"
+       y="36.379085"
+       width="67.815755"
+       height="36.841294"
+       id="rect1" />
+    <rect
+       x="120.0273"
+       y="21.318846"
+       width="102.81796"
+       height="95.365092"
+       id="rect8" />
+    <rect
+       x="221.80022"
+       y="42.54882"
+       width="66.016934"
+       height="25.761481"
+       id="rect10" />
+  </defs>
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="in"
+     inkscape:zoom="4.0941746"
+     inkscape:cx="158.88428"
+     inkscape:cy="103.43965"
+     inkscape:window-width="1850"
+     inkscape:window-height="1011"
+     inkscape:window-x="70"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1"
+     showgrid="false" />
+  <g
+     id="minifield-awaybatting"
+     transform="matrix(0.75688392,0.75688392,-0.75688392,0.75688392,27.004016,-45.646007)"
+     inkscape:label="minifield-awaybatting">
+    <rect
+       style="fill-opacity:1;stroke:#000000;stroke-width:0.635;stroke-dasharray:none;stroke-opacity:1"
+       id="base3-away"
+       width="5.7150002"
+       height="5.7150002"
+       x="-18.096224"
+       y="58.967655"
+       transform="rotate(-90)" />
+    <rect
+       style="fill-opacity:1;stroke:#000000;stroke-width:0.635;stroke-dasharray:none;stroke-opacity:1"
+       id="base2-away"
+       width="5.7150002"
+       height="5.7150002"
+       x="-11.114223"
+       y="58.967655"
+       transform="rotate(-90)" />
+    <rect
+       style="fill-opacity:1;stroke:#000000;stroke-width:0.635;stroke-dasharray:none;stroke-opacity:1"
+       id="base1-away"
+       width="5.7150002"
+       height="5.7150002"
+       x="-11.114223"
+       y="65.952652"
+       transform="rotate(-90)" />
+    <circle
+       style="fill-opacity:1;stroke:#000000;stroke-width:0.635;stroke-dasharray:none;stroke-opacity:1"
+       id="out3-away"
+       cx="41.896976"
+       cy="62.183987"
+       r="1.4210174"
+       transform="rotate(-45)" />
+    <circle
+       style="fill-opacity:1;stroke:#000000;stroke-width:0.635;stroke-dasharray:none;stroke-opacity:1"
+       id="out2-away"
+       cx="67.155945"
+       cy="22.134251"
+       r="1.4210174"
+       transform="rotate(-45,62.948511,15.105483)" />
+    <circle
+       style="fill-opacity:1;stroke:#000000;stroke-width:0.635;stroke-dasharray:none;stroke-opacity:1"
+       id="out1-away"
+       cx="34.189365"
+       cy="62.211678"
+       r="1.4210174"
+       transform="rotate(-45)" />
+  </g>
+  <rect
+     style="fill-opacity:1;stroke:#000000;stroke-width:0.631324;stroke-dasharray:none;stroke-opacity:1"
+     id="winprob-back"
+     width="4.4486761"
+     height="43.900532"
+     x="3.8210936"
+     y="3.3391485"
+     inkscape:label="winprob-back" />
+  <rect
+     style="fill-opacity:1;fill:#000000;stroke:#000000;stroke-width:0.629051;stroke-dasharray:none;stroke-opacity:1"
+     id="winprob-meter"
+     width="4.4509492"
+     height="26.171371"
+     x="3.819957"
+     y="21.083578" />
+  <image
+     style="fill-opacity:1;stroke:none;stroke-width:1.016;stroke-dasharray:none"
+     id="away-logo"
+     width="19.624949"
+     height="19.624949"
+     x="12.081138"
+     y="3.0210924" />
+  <image
+     style="fill-opacity:1;stroke:none;stroke-width:1.016;stroke-dasharray:none"
+     id="home-logo"
+     width="19.656153"
+     height="19.656153"
+     x="11.973796"
+     y="27.833443" />
+  <g
+     id="minifield-homebatting"
+     transform="matrix(0.75611046,0.75611046,-0.75611046,0.75611046,27.023501,-20.900707)"
+     inkscape:label="minifield-homebatting">
+    <rect
+       style="fill-opacity:1;stroke:#000000;stroke-width:0.635;stroke-dasharray:none;stroke-opacity:1"
+       id="base3-home"
+       width="5.7150002"
+       height="5.7150002"
+       x="-18.096224"
+       y="58.967655"
+       transform="rotate(-90)"
+       inkscape:label="base3-home" />
+    <rect
+       style="fill-opacity:1;stroke:#000000;stroke-width:0.635;stroke-dasharray:none;stroke-opacity:1"
+       id="base2-home"
+       width="5.7150002"
+       height="5.7150002"
+       x="-11.114223"
+       y="58.967655"
+       transform="rotate(-90)"
+       inkscape:label="base2-home" />
+    <rect
+       style="fill-opacity:1;stroke:#000000;stroke-width:0.635;stroke-dasharray:none;stroke-opacity:1"
+       id="base1-home"
+       width="5.7150002"
+       height="5.7150002"
+       x="-11.114223"
+       y="65.952652"
+       transform="rotate(-90)"
+       inkscape:label="base1-home" />
+    <circle
+       style="fill-opacity:1;stroke:#000000;stroke-width:0.635;stroke-dasharray:none;stroke-opacity:1"
+       id="out3-home"
+       cx="41.786282"
+       cy="62.183987"
+       r="1.4210174"
+       transform="rotate(-45)"
+       inkscape:label="out3-home" />
+    <circle
+       style="fill-opacity:1;stroke:#000000;stroke-width:0.635;stroke-dasharray:none;stroke-opacity:1"
+       id="out2-home"
+       cx="67.155945"
+       cy="22.134251"
+       r="1.4210174"
+       transform="rotate(-45,62.948511,15.105483)"
+       inkscape:label="out2-home" />
+    <circle
+       style="fill-opacity:1;stroke:#000000;stroke-width:0.635;stroke-dasharray:none;stroke-opacity:1"
+       id="out1-home"
+       cx="34.191132"
+       cy="62.186871"
+       r="1.4210174"
+       transform="rotate(-45)"
+       inkscape:label="out1-home" />
+  </g>
+  <rect
+     style="fill-opacity:1;stroke:none;stroke-width:0.295073"
+     id="excitement-10"
+     width="4.4450002"
+     height="3.7749758"
+     x="81.142662"
+     y="3.0409324" />
+  <rect
+     style="fill-opacity:1;stroke:none;stroke-width:0.295073"
+     id="excitement-9"
+     width="4.4450002"
+     height="3.7749758"
+     x="81.142662"
+     y="7.5603795" />
+  <rect
+     style="fill-opacity:1;stroke:none;stroke-width:0.295073"
+     id="excitement-8"
+     width="4.4450002"
+     height="3.7749758"
+     x="81.142662"
+     y="12.079827" />
+  <rect
+     style="fill-opacity:1;stroke:none;stroke-width:0.295073"
+     id="excitement-7"
+     width="4.4450002"
+     height="3.7749758"
+     x="81.142662"
+     y="16.599274" />
+  <rect
+     style="fill-opacity:1;stroke:none;stroke-width:0.295073"
+     id="excitement-6"
+     width="4.4450002"
+     height="3.7749758"
+     x="81.142662"
+     y="21.118721" />
+  <rect
+     style="fill-opacity:1;stroke:none;stroke-width:0.295073"
+     id="excitement-5"
+     width="4.4450002"
+     height="3.7749758"
+     x="81.142662"
+     y="25.638168" />
+  <rect
+     style="fill-opacity:1;stroke:none;stroke-width:0.295073"
+     id="excitement-4"
+     width="4.4450002"
+     height="3.7749758"
+     x="81.142662"
+     y="30.157616" />
+  <rect
+     style="fill-opacity:1;stroke:none;stroke-width:0.295073"
+     id="excitement-3"
+     width="4.4450002"
+     height="3.7749758"
+     x="81.142662"
+     y="34.677063" />
+  <rect
+     style="fill-opacity:1;stroke:none;stroke-width:0.295073"
+     id="excitement-2"
+     width="4.4450002"
+     height="3.7749758"
+     x="81.142662"
+     y="39.19651" />
+  <rect
+     style="fill-opacity:1;stroke:none;stroke-width:0.295073"
+     id="excitement-1"
+     width="4.4450002"
+     height="3.7749758"
+     x="81.142662"
+     y="43.715958" />
+<text xml:space="preserve" id="awayscore-obj" class="cabin-font" style="font-size:27px;text-align:start;white-space:pre;shape-inside:url(#rect4);display:inline;fill:#000000;fill-opacity:1;stroke-width:3.77953" x="0" y="0"><tspan x="34" y="22.5" id="awayscore">20</tspan></text>
+<text xml:space="preserve" id="awayscore-obj" class="cabin-font" style="font-size:27px;text-align:start;white-space:pre;shape-inside:url(#rect4);display:inline;fill:#000000;fill-opacity:1;stroke-width:3.77953" x="0" y="0"><tspan x="34" y="47" id="homescore">5</tspan></text>
+  <text
+     xml:space="preserve"
+     transform="matrix(0.28320881,0,0,0.28320881,-4.1641687,-2.7370353)"
+     class="cabin-font"
+     id="bottom-inning-obj"
+     style="font-size:21.3333px;text-align:start;white-space:pre;shape-inside:url(#rect9);display:inline;fill:#000000;fill-opacity:1;stroke-width:3.77953"><tspan
+       x="221.80078"
+       y="61.423798"
+       id="bottom-inning-text">BOT 6</tspan></text>
+  <text
+     xml:space="preserve"
+     transform="matrix(0.28291939,0,0,0.28291939,-4.3188049,21.905142)"
+     id="top-inning-obj"
+     class="cabin-font"
+     style="font-size:21.3333px;text-align:start;white-space:pre;shape-inside:url(#rect10);display:inline;fill:#000000;fill-opacity:1;stroke-width:3.77953"
+     inkscape:label="text9"><tspan
+       x="221.80078"
+       y="61.423798"
+       id="top-inning-text">TOP 6</tspan></text>
+</svg>
     <script src="excitement.js"></script>
     <script src="winprob.js"></script>
     <script src="main.js"></script>
