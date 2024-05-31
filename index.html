@@ -13,7 +13,7 @@
     <p style="width: 600px">This webpage plays pink noise to display the status of a baseball game. Press one of the buttons to "tune in" to the game.
         Roughly speaking, the noise's volume indicates the excitement level of the game (expected entropy loss until the half-inning ends, technically)
         and the pitch indicates whether your team is winning (higher pitch, closer to an "ahh") or losing (lower pitch, closer to an "ooh").
-        Reload the page to tune into another game.</p>
+        Reload the page to tune into another game. Win probability is on the lef(top/bottom bars represent away/home teams) and relative excitement is displayed on the right (one to ten boxes).</p>
     <p id="display"></p>
     <div id="buttons"></div>
     <!--img alt="Cubs logo" src="https://www.mlbstatic.com/team-logos/team-cap-on-light/112.svg"-->
@@ -154,14 +154,14 @@
      x="3.819957"
      y="21.083578" />
   <image
-     style="fill-opacity:1;stroke:none;stroke-width:1.016;stroke-dasharray:none"
+     style="fill-opacity:1;stroke:none;stroke-width:1.016;stroke-dasharray:none;filter:grayscale(100%)"
      id="away-logo"
      width="19.624949"
      height="19.624949"
      x="12.081138"
      y="3.0210924" />
   <image
-     style="fill-opacity:1;stroke:none;stroke-width:1.016;stroke-dasharray:none"
+     style="fill-opacity:1;stroke:none;stroke-width:1.016;stroke-dasharray:none;filter:grayscale(100%)"
      id="home-logo"
      width="19.656153"
      height="19.656153"
